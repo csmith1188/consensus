@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consensus</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="page">
+        <header class="topbar">
+            <div>
+                <h1>Consensus</h1>
+                <p id="class-label" class="muted">Connecting…</p>
+            </div>
+            <div class="topbar-end">
+                <span id="user-name"></span>
+                <a class="text-link" href="/logout">Log out</a>
+            </div>
+        </header>
+
+        <p id="status" class="status" hidden></p>
+        <p id="error" class="error" hidden></p>
+
+        <section class="card" data-help="mode">
+            <div class="card-head">
+                <h2>Listen</h2>
+                <button class="help" type="button" data-help="mode" aria-label="Help: listen mode">?</button>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Listen mode">
+                <button type="button" class="seg" data-mode="never">Never</button>
+                <button type="button" class="seg active" data-mode="always">Always</button>
+                <button type="button" class="seg" data-mode="con">With [Con] tag</button>
+            </div>
+        </section>
+
+        <section class="card" data-help="force">
+            <div class="card-head">
+                <h2>Send now</h2>
+                <button class="help" type="button" data-help="force" aria-label="Help: force send">?</button>
+            </div>
+            <button id="force-send" type="button" class="primary" disabled>Send to AI before poll ends</button>
+        </section>
+
+        <section class="card" data-help="answers">
+            <div class="card-head">
+                <h2>Generated answers</h2>
+                <button class="help" type="button" data-help="answers" aria-label="Help: generated answers">?</button>
+            </div>
+            <div id="answers" class="answers empty">Answers will appear here after Consensus sends a poll to AI.</div>
+        </section>
+
+        <section class="card" data-help="responses">
+            <div class="card-head">
+                <h2>Student responses</h2>
+                <button class="help" type="button" data-help="responses" aria-label="Help: student responses">?</button>
+            </div>
+            <p id="poll-meta" class="muted"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="responses">
+                        <tr>
+                            <td colspan="2" class="muted">No matching text poll yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <dialog id="help-dialog">
+        <form method="dialog">
+            <h2 id="help-title"></h2>
+            <p id="help-body"></p>
+            <button type="submit" class="primary">Close</button>
+        </form>
+    </dialog>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/client.js"></script>
+</body>
+</html>

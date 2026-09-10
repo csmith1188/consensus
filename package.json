@@ -1,0 +1,20 @@
+{
+  "name": "consensus",
+  "version": "1.0.0",
+  "description": "Formbar consensus poll helper",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "connect-sqlite3": "^0.9.16",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "jsonwebtoken": "^9.0.3",
+    "openai": "^4.0.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "sqlite3": "^5.1.7"
+  }
+}

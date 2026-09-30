@@ -1,7 +1,15 @@
 const HELP = {
+    start: {
+        title: 'Start',
+        body: 'Enter a question and start a Formbar text poll from this page. When enough students respond, Consensus sends their answers to AI and starts the follow-up poll. In [Con] listen mode, the tag is added automatically if you leave it off.'
+    },
     mode: {
         title: 'Listen mode',
-        body: 'Never ignores class polls. Always watches every free-text poll in your current Formbar class and sends it to AI when everyone has answered. With [Con] tag only watches text polls whose question starts with [Con], so you can run ordinary polls without triggering Consensus.'
+        body: 'Never ignores class polls. Always watches every free-text poll in your current Formbar class and sends it to AI when everyone has answered, or sooner when Auto-end is on. With [Con] tag only watches text polls whose question starts with [Con], so you can run ordinary polls without triggering Consensus.'
+    },
+    autoend: {
+        title: 'Auto-end',
+        body: 'When at least X% of the class has responded, wait Y seconds, then send those responses to AI and start the follow-up poll. Defaults are 80% and 5 seconds. Turn this off if you only want full completion or Send now.'
     },
     force: {
         title: 'Send now',
@@ -22,6 +30,13 @@ const classLabel = document.getElementById('class-label');
 const userName = document.getElementById('user-name');
 const statusEl = document.getElementById('status');
 const errorEl = document.getElementById('error');
+const startForm = document.getElementById('start-form');
+const seedPrompt = document.getElementById('seed-prompt');
+const startBtn = document.getElementById('start-btn');
+const autoEnabled = document.getElementById('auto-end-enabled');
+const autoSeconds = document.getElementById('auto-end-seconds');
+const autoPercent = document.getElementById('auto-end-percent');
+const autoStatus = document.getElementById('auto-end-status');
 const answersEl = document.getElementById('answers');
 const responsesEl = document.getElementById('responses');
 const pollMeta = document.getElementById('poll-meta');
@@ -29,6 +44,9 @@ const forceBtn = document.getElementById('force-send');
 const helpDialog = document.getElementById('help-dialog');
 const helpTitle = document.getElementById('help-title');
 const helpBody = document.getElementById('help-body');
+
+let applyingAutoSettings = false;
+let countdownTimer = null;
 
 function setText(el, text, hiddenIfEmpty) {
     el.textContent = text || '';
@@ -86,6 +104,43 @@ function renderResponses(rows) {
     }
 }
 
+function emitAutoEnd() {
+    if (applyingAutoSettings) return;
+    socket.emit('setAutoEnd', {
+        enabled: autoEnabled.checked,
+        seconds: Number(autoSeconds.value),
+        percent: Number(autoPercent.value)
+    });
+}
+
+function clearCountdown() {
+    if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+    }
+}
+
+function startCountdown(remainingMs) {
+    clearCountdown();
+    if (remainingMs == null) {
+        autoStatus.textContent = '';
+        return;
+    }
+
+    let left = Math.max(0, remainingMs);
+    const tick = () => {
+        const seconds = Math.ceil(left / 1000);
+        autoStatus.textContent = `Sending to AI in ${seconds}s…`;
+        if (left <= 0) {
+            clearCountdown();
+            return;
+        }
+        left -= 250;
+    };
+    tick();
+    countdownTimer = setInterval(tick, 250);
+}
+
 function render(state) {
     userName.textContent = state.user || '';
     classLabel.textContent = state.className
@@ -100,13 +155,33 @@ function render(state) {
         btn.classList.toggle('active', btn.dataset.mode === state.mode);
     });
 
+    applyingAutoSettings = true;
+    autoEnabled.checked = Boolean(state.autoEndEnabled);
+    autoSeconds.value = state.autoEndSeconds != null ? state.autoEndSeconds : 5;
+    autoPercent.value = state.autoEndPercent != null ? state.autoEndPercent : 80;
+    applyingAutoSettings = false;
+
+    if (state.autoEndArmed && state.autoEndRemainingMs != null) {
+        startCountdown(state.autoEndRemainingMs);
+    } else {
+        clearCountdown();
+        autoStatus.textContent = state.autoEndEnabled
+            ? `Waits ${state.autoEndSeconds}s after ${state.autoEndPercent}% respond.`
+            : 'Auto-end is off.';
+    }
+
+    startBtn.disabled = !state.startEnabled;
+    startBtn.textContent = state.starting
+        ? 'Starting…'
+        : 'Start text poll';
+
     forceBtn.disabled = !state.forceSendEnabled;
     forceBtn.textContent = state.sendingToAi
         ? 'Sending to AI…'
         : 'Send to AI before poll ends';
 
     if (state.poll && state.poll.matching) {
-        pollMeta.textContent = `${state.poll.prompt} · ${state.poll.totalResponses}/${state.poll.totalResponders} responses`;
+        pollMeta.textContent = `${state.poll.prompt} · ${state.poll.totalResponses}/${state.poll.totalResponders} responses (${state.poll.percent || 0}%)`;
     } else if (state.poll && state.poll.isFollowUp) {
         const fromPrompt = state.poll.prompt && state.poll.prompt !== 'Which one is the best?'
             ? `From “${state.poll.prompt}”. `
@@ -119,6 +194,17 @@ function render(state) {
     renderAnswers(state.answers);
     renderResponses(state.responses);
 }
+
+startForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const prompt = seedPrompt.value.trim();
+    if (!prompt) return;
+    socket.emit('startQuestion', { prompt });
+});
+
+autoEnabled.addEventListener('change', emitAutoEnd);
+autoSeconds.addEventListener('change', emitAutoEnd);
+autoPercent.addEventListener('change', emitAutoEnd);
 
 document.querySelectorAll('.seg').forEach((btn) => {
     btn.addEventListener('click', () => {

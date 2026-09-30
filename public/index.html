@@ -22,6 +22,20 @@
         <p id="status" class="status" hidden></p>
         <p id="error" class="error" hidden></p>
 
+        <section class="card" data-help="start">
+            <div class="card-head">
+                <h2>Start</h2>
+                <button class="help" type="button" data-help="start" aria-label="Help: start">?</button>
+            </div>
+            <form id="start-form" class="start-form">
+                <label class="field-block" for="seed-prompt">
+                    <span class="field-label">Prompt</span>
+                    <textarea id="seed-prompt" name="prompt" rows="3" placeholder="What is the capital of France?" required></textarea>
+                </label>
+                <button id="start-btn" type="submit" class="primary" disabled>Start text poll</button>
+            </form>
+        </section>
+
         <section class="card" data-help="mode">
             <div class="card-head">
                 <h2>Listen</h2>
@@ -32,6 +46,30 @@
                 <button type="button" class="seg active" data-mode="always">Always</button>
                 <button type="button" class="seg" data-mode="con">With [Con] tag</button>
             </div>
+        </section>
+
+        <section class="card" data-help="autoend">
+            <div class="card-head">
+                <h2>Auto-end</h2>
+                <button class="help" type="button" data-help="autoend" aria-label="Help: auto-end">?</button>
+            </div>
+            <label class="check-row">
+                <input id="auto-end-enabled" type="checkbox" checked>
+                <span>Send to AI when enough of the class has responded</span>
+            </label>
+            <div class="field-row">
+                <label>
+                    After
+                    <input id="auto-end-seconds" type="number" min="0" max="600" step="1" value="5">
+                    seconds
+                </label>
+                <label>
+                    when
+                    <input id="auto-end-percent" type="number" min="1" max="100" step="1" value="80">
+                    % have responded
+                </label>
+            </div>
+            <p id="auto-end-status" class="muted"></p>
         </section>
 
         <section class="card" data-help="force">

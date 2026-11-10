@@ -1,248 +1,115 @@
-:root {
-    --bg: #f6f4ef;
-    --card: #fffdf8;
-    --ink: #1c1916;
-    --muted: #6b645c;
-    --line: #e6e0d4;
-    --accent: #2f5d50;
-    --accent-ink: #f7faf8;
-    --warn: #8a2f2f;
-    --correct: #2f5d50;
-    --radius: 14px;
-}
-
 * {
     box-sizing: border-box;
 }
 
-html, body {
+body {
     margin: 0;
-    min-height: 100%;
-    background: var(--bg);
-    color: var(--ink);
-    font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+    color: #2b1738;
+    font: 16px/1.5 "Comic Sans MS", "Comic Sans", cursive;
+    background: #eee4f5;
 }
 
 .page {
     max-width: 760px;
     margin: 0 auto;
-    padding: 28px 20px 64px;
+    padding: 1.5rem;
+}
+
+.errpage {
+    background-color:#8d2457;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.topbar,
+.card-head,
+.topbar-end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .topbar {
-    display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 24px;
 }
 
 .topbar h1,
 .card h2,
 #help-title {
     margin: 0;
-    font-size: 1.15rem;
-    font-weight: 650;
-    letter-spacing: -0.02em;
-}
-
-.topbar-end {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    color: var(--muted);
-}
-
-.muted {
-    color: var(--muted);
-    margin: 4px 0 0;
 }
 
 .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 18px 18px 20px;
-    margin-bottom: 14px;
+    padding: 1rem 0;
+    border-bottom: 1px solid #cbb6dc;
 }
 
-.card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
+.muted,
+.answers.empty {
+    color: #695778;
 }
 
-.help {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-weight: 700;
-}
-
-.help:hover,
-.seg:hover,
-.text-link:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-.segmented {
+.segmented,
+.field-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 0.5rem 1rem;
 }
 
-.seg,
-.primary,
-dialog button {
-    border: 1px solid var(--line);
-    background: #fff;
-    color: var(--ink);
-    border-radius: 999px;
-    padding: 8px 14px;
-    cursor: pointer;
+.start-form,
+.field-block,
+.answers {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.check-row,
+.field-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+input,
+textarea,
+button {
     font: inherit;
 }
 
-.seg.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
+textarea {
+    width: 100%;
+    min-height: 5rem;
 }
 
+button {
+    cursor: pointer;
+    padding: 0.35rem 0.7rem;
+    color: #2b1738;
+    background: #f9f5fc;
+    border: 1px solid #9a78b5;
+    border-radius: 4px;
+}
+
+.seg.active,
 .primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
+    color: #fff;
+    background: #69428b;
+    border-color: #69428b;
 }
 
-.primary:disabled {
-    opacity: 0.45;
+button:disabled {
     cursor: not-allowed;
-    background: #c5c1b8;
-    border-color: #c5c1b8;
-    color: #5c5853;
-}
-
-.text-link {
-    color: var(--muted);
-    text-decoration: none;
 }
 
 .status,
 .error {
-    margin: 0 0 14px;
-    padding: 10px 12px;
-    border-radius: 10px;
-}
-
-.status {
-    background: #e8f0ec;
+    padding: 0.5rem 0;
 }
 
 .error {
-    background: #f8e8e6;
-    color: var(--warn);
-}
-
-.check-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 12px;
-    cursor: pointer;
-}
-
-.check-row input {
-    margin-top: 4px;
-}
-
-.start-form {
-    display: grid;
-    gap: 12px;
-}
-
-.field-block {
-    display: grid;
-    gap: 6px;
-}
-
-.field-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-weight: 600;
-}
-
-#seed-prompt {
-    width: 100%;
-    resize: vertical;
-    min-height: 72px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 10px 12px;
-    font: inherit;
-    color: var(--ink);
-    background: #fff;
-}
-
-#seed-prompt:focus {
-    outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    border-color: var(--accent);
-}
-
-.field-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 24px;
-}
-
-.field-row label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted);
-}
-
-.field-row input[type="number"] {
-    width: 72px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 6px 8px;
-    font: inherit;
-    color: var(--ink);
-    background: #fff;
-}
-
-.answers {
-    display: grid;
-    gap: 8px;
-}
-
-.answers.empty {
-    color: var(--muted);
-}
-
-.answer {
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 10px 12px;
-}
-
-.answer.correct {
-    border-color: var(--correct);
-    background: #eef5f2;
-}
-
-.answer-label {
-    font-size: 0.75rem;
-    color: var(--correct);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: #8d2457;
 }
 
 .table-wrap {
@@ -254,39 +121,17 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
+    padding: 0.5rem;
     text-align: left;
-    padding: 10px 8px;
-    border-bottom: 1px solid var(--line);
-    vertical-align: top;
-}
-
-th {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-weight: 600;
+    border-bottom: 1px solid #cbb6dc;
 }
 
 dialog {
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 0;
-    width: min(92vw, 420px);
-    background: var(--card);
-}
-
-dialog::backdrop {
-    background: rgba(28, 25, 22, 0.35);
-}
-
-dialog form {
-    padding: 20px;
-}
-
-#help-body {
-    color: var(--muted);
-}
-
-dialog .primary {
-    margin-top: 8px;
+    max-width: 92vw;
+    color: #2b1738;
+    background: #f9f5fc;
+    border: 1px solid #9a78b5;
+    border-radius: 4px;
 }

@@ -23,6 +23,7 @@ const HELP = {
         title: 'Student responses',
         body: 'Live text answers from the current matching poll. Names and wording are exactly what students submitted in Formbar. This table stays empty in Never mode, or when the current poll does not match Always / [Con].'
     }
+
 };
 
 const socket = io();

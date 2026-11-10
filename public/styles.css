@@ -2,10 +2,15 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "ChildrenSans";
+    src: url("/ChildrenSans.ttf") format("truetype");
+}
+
 body {
     margin: 0;
     color: #2b1738;
-    font: 16px/1.5 "ChildrenSans.ttf", sans-serif;
+    font: 16px/1.5 "ChildrenSans", sans-serif;
     background: #eee4f5;
 }
 
